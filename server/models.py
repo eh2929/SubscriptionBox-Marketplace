@@ -8,7 +8,7 @@ from config import db
 # User Model
 
 
-class User(db.Model):
+class User(db.Model, SerializerMixin):
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -18,13 +18,13 @@ class User(db.Model):
     total_active_orders = db.Column(db.Integer)
 
     # Relationships
-
+    orders = db.relationship('Order', back_populates='user')
     # Serializers
-
+    serialize_rules = ('-orders.user',)
     # Validation
 
 
-class Order(db.Model):
+class Order(db.Model, SerializerMixin):
     __tablename__ = "order"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -39,13 +39,14 @@ class Order(db.Model):
     total_monthly_price = db.Column(db.Float)
 
     # Relationships
-
+    user = db.relationship('User', back_populates='orders')
+    subscription = db.relationship('Subscription', back_populates='orders')
     # Serializers
-
+    serialize_rules = ('-user.orders', '-subscription.orders',)
     # Validation
 
 
-class Subscription(db.Model):
+class Subscription(db.Model, SerializerMixin):
     __tablename__ = "subscription"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -53,13 +54,14 @@ class Subscription(db.Model):
     subtotal_price = db.Column(db.Float)
 
     # Relationships
-
+    orders = db.relationship('Order', back_populates='subscription')
+    box = db.relationship('Box', back_populates='subscription')
     # Serializers
-
+    serialize_rules = ('-orders.subscription',)
     # Validation
 
 
-class Box(db.Model):
+class Box(db.Model, SerializerMixin):
     __tablename__ = "box"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -70,8 +72,8 @@ class Box(db.Model):
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
 
     # Relationships
-
+    subscription = db.relationship('Subscription', back_populates='box')
     # Serializers
-
+    serialize_rules = ('-subscription.box')
     # Validation
     #oh look a change
