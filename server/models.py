@@ -1,5 +1,5 @@
 from sqlalchemy_serializer import SerializerMixin
-from sqlalchemy.ext.associationproxy import association_proxy
+# from sqlalchemy.ext.associationproxy import association_proxy
 
 from config import db
 
@@ -74,3 +74,4 @@ class Box(db.Model):
     # Serializers
 
     # Validation
+    #oh look a change
