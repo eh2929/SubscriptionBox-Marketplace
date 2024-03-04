@@ -1,5 +1,6 @@
 from sqlalchemy_serializer import SerializerMixin
 # from sqlalchemy.ext.associationproxy import association_proxy
+from flask import validates
 
 from config import db
 
@@ -12,7 +13,7 @@ class User(db.Model, SerializerMixin):
     __tablename__ = "user"
 
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
+    username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     email = db.Column(db.String)
     total_active_orders = db.Column(db.Integer)
@@ -22,6 +23,12 @@ class User(db.Model, SerializerMixin):
     # Serializers
     serialize_rules = ('-orders.user',)
     # Validation
+    @validates('email')
+    def validate_email(self, key, email):
+        if '@' not in email:
+            raise ValueError(f"{key}. Invalid email address.")
+        else:
+            return email
 
 
 class Order(db.Model, SerializerMixin):
@@ -44,6 +51,12 @@ class Order(db.Model, SerializerMixin):
     # Serializers
     serialize_rules = ('-user.orders', '-subscription.orders',)
     # Validation
+    @validates('quantity', 'frequency')
+    def validate_not_empty(self, key, value):
+        if not value:
+            raise ValueError(f"{key} is required.")
+        else:
+            return value
 
 
 class Subscription(db.Model, SerializerMixin):
@@ -59,6 +72,12 @@ class Subscription(db.Model, SerializerMixin):
     # Serializers
     serialize_rules = ('-orders.subscription',)
     # Validation
+    @validates('description')
+    def validate_description(self, key, value):
+        if not value:
+            raise ValueError(f"{key} is required.")
+        else:
+            return value
 
 
 class Box(db.Model, SerializerMixin):
@@ -76,4 +95,9 @@ class Box(db.Model, SerializerMixin):
     # Serializers
     serialize_rules = ('-subscription.box')
     # Validation
-    #oh look a change
+    @validates('name', 'included_items')
+    def validate_name(self, key, value):
+        if not value:
+            raise ValueError(f"{key} is required.")
+        else:
+            return value
