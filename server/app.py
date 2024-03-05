@@ -106,7 +106,9 @@ api.add_resource(Orders, "/orders")
 class OrderById(Resource):
 
     def get(self, id):
-        order = Order.query.get_or_404(id, description="Order not found")
+        order = Order.query.filter_by(id=id).first()
+        if not order:
+            return make_response({"errors": ["Order not found"]}, 404)
         return make_response(order.to_dict(), 200)
 
     def delete(self, id):
@@ -136,9 +138,15 @@ api.add_resource(OrderById, "/orders/<int:id>")
 
 # '/subscriptions' route
 class Subscriptions(Resource):
+
     def get(self):
-        subs = [sub.to_dict() for sub in Subscription.query.all()]
-        response = make_response(subs, 200)
+        subs = [
+            sub.to_dict(rules=("-boxes", "-orders")) for sub in Subscription.query.all()
+        ]
+        if not subs:
+            response = make_response({"error": "No subscriptions found"}, 404)
+        else:
+            response = make_response(subs, 200)
         return response
 
     def post(self):
@@ -162,16 +170,21 @@ api.add_resource(Subscriptions, "/subscriptions")
 
 # '/subscription/<int:id>' route
 class SubscriptionByID(Resource):
+
     def get(self, id):
         subscription = Subscription.query.filter_by(id=id).first()
-        sub_dict = subscription.to_dictt()
-        response = make_response(sub_dict, 200)
+        if not subscription:
+            return make_response({"error": "Subscription not found"}, 404)
+        subscription_dict = subscription.to_dict()
+        response = make_response(subscription_dict, 200)
         return response
 
     def patch(self, id):
         try:
             form_data = request.get_json()
             subscription = Subscription.query.filter_by(id=id).first()
+            if not subscription:
+                return make_response({"error": "Subscription not found"}, 404)
             for attr in form_data:
                 setattr(subscription, attr, form_data[attr])
             db.session.commit()
@@ -181,18 +194,28 @@ class SubscriptionByID(Resource):
             response = make_response({"error": "Could not update subscription"}, 400)
         return response
 
+    def delete(self, id):
+        subs = Subscription.query.filter_by(id=id).first()
+        if not subs:
+            return make_response({"error": "Subscription not found"}, 404)
+        db.session.delete(subs)
+        db.session.commit()
+        return make_response({}, 204)
+
 
 api.add_resource(SubscriptionByID, "/subscriptions/<int:id>")
 
 
 # '/boxes' route
 class Boxes(Resource):
+
     def get(self):
-        boxes = [box.to_dict() for box in Box.query.all()]
+        boxes = [box.to_dict(rules=("-subscription",)) for box in Box.query.all()]
         response = make_response(boxes, 200)
         return response
 
     def post(self):
+
         try:
             form_data = request.get_json()
             new_box = Box(
@@ -202,7 +225,7 @@ class Boxes(Resource):
             )
             db.session.add(new_box)
             db.session.commit()
-            new_box_dict = new_box.to_dict()
+            new_box_dict = new_box.to_dict(rules=("-subscription",))
             response = make_response(new_box_dict, 201)
         except:
             response = make_response({"error": "Could not create box"}, 400)
@@ -214,9 +237,12 @@ api.add_resource(Boxes, "/boxes")
 
 # '/boxes/<int:id>' route
 class BoxByID(Resource):
+
     def get(self, id):
         box = Box.query.filter_by(id=id).first()
-        box_dict = box.to_dict()
+        box_dict = box.to_dict(rules=("-subscription",))
+        if not box:
+            response = make_response({"error": "Box not found"}, 404)
         response = make_response(box_dict, 200)
         return response
 
@@ -227,11 +253,19 @@ class BoxByID(Resource):
             for attr in form_data:
                 setattr(box, attr, form_data[attr])
             db.session.commit()
-            box_dict = box.to_dict()
+            box_dict = box.to_dict(rules=("-subscription",))
             response = make_response(box_dict, 200)
         except:
             response = make_response({"error": "Could not update box"}, 400)
         return response
+
+    def delete(self, id):
+        boxes = Box.query.filter_by(id=id).first()
+        if not boxes:
+            return make_response({"errors": "Box not found"}, 404)
+        db.session.delete(boxes)
+        db.session.commit()
+        return make_response({}, 204)
 
 
 api.add_resource(BoxByID, "/boxes/<int:id>")

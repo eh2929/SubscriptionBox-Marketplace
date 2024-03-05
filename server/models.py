@@ -56,7 +56,8 @@ class Order(db.Model, SerializerMixin):
     # Relationships
     user = db.relationship("User", back_populates="orders")
     subscription = db.relationship(
-        "Subscription", back_populates="orders", cascade="all,delete"
+        "Subscription",
+        back_populates="orders",
     )
     # Serializers
     serialize_rules = (
