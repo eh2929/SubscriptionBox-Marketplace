@@ -82,6 +82,7 @@ def seed_boxes():
 
 
 # Function to seed orders
+# Function to seed orders
 def seed_orders():
     print("Seeding orders...")
     users = User.query.all()
@@ -92,8 +93,12 @@ def seed_orders():
         order = Order(
             user_id=user.id,
             subscription_id=subscription.id,
-            status=random.choice(["Pending", "Shipped", "Delivered"]),
-            frequency=random.choice(["Monthly", "Weekly"]),
+            status=random.choice(
+                Order.VALID_STATUSES
+            ),  # Use valid statuses from Order model
+            frequency=random.choice(
+                Order.VALID_FREQUENCIES
+            ),  # Use valid frequencies from Order model
             quantity=random.randint(1, 10),
             total_monthly_price=random.uniform(10.0, 100.0),
         )

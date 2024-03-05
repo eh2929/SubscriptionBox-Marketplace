@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: cae8f2e39526
+Revision ID: 7810439adf42
 Revises: 
-Create Date: 2024-03-05 09:17:02.604494
+Create Date: 2024-03-05 14:00:38.132558
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'cae8f2e39526'
+revision = '7810439adf42'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,9 @@ def upgrade():
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('total_active_orders', sa.Integer(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('email'),
+    sa.UniqueConstraint('username')
     )
     op.create_table('box',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -42,12 +44,12 @@ def upgrade():
     )
     op.create_table('order',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('subscription_id', sa.Integer(), nullable=True),
     sa.Column('status', sa.String(), nullable=True),
     sa.Column('frequency', sa.String(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=True),
     sa.Column('total_monthly_price', sa.Float(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('subscription_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['subscription_id'], ['subscription.id'], name=op.f('fk_order_subscription_id_subscription')),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], name=op.f('fk_order_user_id_user')),
     sa.PrimaryKeyConstraint('id')
