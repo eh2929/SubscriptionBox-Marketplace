@@ -1,4 +1,6 @@
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
+
 # from sqlalchemy.ext.associationproxy import association_proxy
 
 from config import db
@@ -18,10 +20,16 @@ class User(db.Model, SerializerMixin):
     total_active_orders = db.Column(db.Integer)
 
     # Relationships
-    orders = db.relationship('Order', back_populates='user')
+    orders = db.relationship("Order", back_populates="user")
     # Serializers
-    serialize_rules = ('-orders.user',)
+    serialize_rules = ("-orders.user",)
+
     # Validation
+    @validates("username")
+    def validate_username(self, key, username):
+        if len(username) < 3:
+            raise ValueError("Username must be at least 3 characters long.")
+        return username
 
 
 class Order(db.Model, SerializerMixin):
@@ -39,10 +47,13 @@ class Order(db.Model, SerializerMixin):
     total_monthly_price = db.Column(db.Float)
 
     # Relationships
-    user = db.relationship('User', back_populates='orders')
-    subscription = db.relationship('Subscription', back_populates='orders')
+    user = db.relationship("User", back_populates="orders")
+    subscription = db.relationship("Subscription", back_populates="orders")
     # Serializers
-    serialize_rules = ('-user.orders', '-subscription.orders',)
+    serialize_rules = (
+        "-user.orders",
+        "-subscription.orders",
+    )
     # Validation
 
 
@@ -54,11 +65,14 @@ class Subscription(db.Model, SerializerMixin):
     subtotal_price = db.Column(db.Float)
 
     # Relationships
-    orders = db.relationship('Order', back_populates='subscription')
-    box = db.relationship('Box', back_populates='subscription')
+    orders = db.relationship("Order", back_populates="subscription")
+    box = db.relationship("Box", back_populates="subscription")
     # Serializers
-    serialize_rules = ('-orders.subscription',)
-    # Validation
+
+    serialize_rules = ("-orders.subscription",)
+
+
+# Validation
 
 
 class Box(db.Model, SerializerMixin):
@@ -72,8 +86,10 @@ class Box(db.Model, SerializerMixin):
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
 
     # Relationships
-    subscription = db.relationship('Subscription', back_populates='box')
+    subscription = db.relationship("Subscription", back_populates="box")
     # Serializers
-    serialize_rules = ('-subscription.box')
-    # Validation
-    #oh look a change
+    serialize_rules = ("-subscription.box",)
+
+
+# Validation
+# oh look a change
