@@ -180,6 +180,8 @@ class SubscriptionByID(Resource):
         try:
             form_data = request.get_json()
             subscription = Subscription.query.filter_by(id=id).first()
+            if not subscription:
+                return make_response({"error": "Subscription not found"}, 404)
             for attr in form_data:
                 setattr(subscription, attr, form_data[attr])
             db.session.commit()
@@ -194,6 +196,14 @@ class SubscriptionByID(Resource):
                 400
             )
         return response
+
+    def delete(self, id):
+        subs = Subscription.query.filter_by(id=id).first()
+        if not subs:
+            return make_response({"errors": [" not found"]}, 404)
+        db.session.delete(subs)
+        db.commit()
+        return make_response({}, 204)
     
 
 api.add_resource(SubscriptionByID, '/subscriptions/<int:id>')
@@ -250,6 +260,8 @@ class BoxByID(Resource):
         try:
             form_data = request.get_json()
             box = Box.query.filter_by(id=id).first()
+            if not box:
+                return make_response({"error": "Box not found"}, 404)
             for attr in form_data:
                 setattr(box, attr, form_data[attr])
             db.session.commit()
@@ -264,6 +276,14 @@ class BoxByID(Resource):
                 400
             )
         return response
+    
+    def delete(self, id):
+        boxes = Box.query.filter_by(id=id).first()
+        if not boxes:
+            return make_response({"errors": "Box not found"}, 404)
+        db.session.delete(boxes)
+        db.commit()
+        return make_response({}, 204)
     
 
 api.add_resource(BoxByID, '/boxes/<int:id>')
