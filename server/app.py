@@ -81,15 +81,19 @@ api.add_resource(UserById, "/users/<int:id>")
 class Orders(Resource):
     # test
     def get(self):
-        orders = [order.to_dict() for order in Order.query.all()]
+        orders = [order.to_dict(rules=('-subscriptions',)) for order in Order.query.all()]
         return make_response(orders, 200)
 
     # test
     def post(self):
         req_data = request.get_json()
         try:
-            new_order = Order(**req_data)
-        except ValueError as e:
+            new_order = Order(
+                subscription_id=req_data["subscription_id"],
+                quantity=req_data["quantity"],
+                frequency=req_data["frequency"]
+            )
+        except:
             return make_response({"errors": ["validation errors"]}, 400)
         db.session.add(new_order)
         db.session.commit()
@@ -103,7 +107,9 @@ api.add_resource(Orders, "/orders")
 class OrderById(Resource):
     # test
     def get(self, id):
-        order = Order.query.get_or_404(id, description="Order not found")
+        order = Order.query.filter_by(id=id).first()
+        if not order:
+            return make_response({"errors": ["Order not found"]},)
         return make_response(order.to_dict(), 200)
 
     # test
@@ -133,11 +139,12 @@ class OrderById(Resource):
 # '/subscriptions' route
 class Subscriptions(Resource):
     def get(self):
-        subs = [sub.to_dict() for sub in Subscription.query.all()]
-        response = make_response(
-            subs,
-            200
-        )
+        subs = [
+            sub.to_dict(rules=('-box', '-orders',)) for sub in Subscription.query.all()
+            ]
+        if not subs:
+            response = make_response({"error": "No subscriptions found"}, 404)
+        else: response = make_response(subs, 200)
         return response
 
     def post(self):
@@ -155,10 +162,7 @@ class Subscriptions(Resource):
                 201
             )
         except:
-            response = make_response(
-                {'error': 'Could not create subscription'},
-                400
-            )
+            response = make_response({'error': 'Could not create subscription'}, 400)
         return response
 
 
@@ -169,11 +173,10 @@ api.add_resource(Subscriptions, '/subscriptions')
 class SubscriptionByID(Resource):
     def get(self, id):
         subscription = Subscription.query.filter_by(id=id).first()
-        sub_dict = subscription.to_dictt()
-        response = make_response(
-            sub_dict,
-            200
-        )
+        if not subscription:
+            response = make_response({"error": "Subscription not found"}, 404)
+        sub_dict = subscription.to_dict(rules=('-box', '-orders',))
+        response = make_response(sub_dict, 200)
         return response
 
     def patch(self, id):
@@ -185,24 +188,18 @@ class SubscriptionByID(Resource):
             for attr in form_data:
                 setattr(subscription, attr, form_data[attr])
             db.session.commit()
-            subscription_dict = subscription.to_dict()
-            response = make_response(
-                subscription_dict,
-                200
-            )
+            subscription_dict = subscription.to_dict(rules=('-box', '-orders',))
+            response = make_response(subscription_dict, 200)
         except:
-            response = make_response(
-                {'error': 'Could not update subscription'},
-                400
-            )
+            response = make_response({'error': 'Could not update subscription'}, 400)
         return response
 
     def delete(self, id):
         subs = Subscription.query.filter_by(id=id).first()
         if not subs:
-            return make_response({"errors": [" not found"]}, 404)
+            return make_response({"errors": ["Subscription not found"]}, 404)
         db.session.delete(subs)
-        db.commit()
+        db.session.commit()
         return make_response({}, 204)
     
 
@@ -212,11 +209,8 @@ api.add_resource(SubscriptionByID, '/subscriptions/<int:id>')
 # '/boxes' route
 class Boxes(Resource):
     def get(self):
-        boxes = [box.to_dict() for box in Box.query.all()]
-        response = make_response(
-            boxes,
-            200
-        )
+        boxes = [box.to_dict(rules=('-subscription',)) for box in Box.query.all()]
+        response = make_response(boxes, 200)
         return response
     
     def post(self):
@@ -229,7 +223,7 @@ class Boxes(Resource):
             )
             db.session.add(new_box)
             db.session.commit()
-            new_box_dict = new_box.to_dict()
+            new_box_dict = new_box.to_dict(rules=('-subscription',))
             response = make_response(
                 new_box_dict,
                 201
@@ -247,10 +241,13 @@ api.add_resource(Boxes, '/boxes')
 
 # '/boxes/<int:id>' route
 class BoxByID(Resource):
+
     def get(self, id):
         box = Box.query.filter_by(id=id).first()
-        box_dict = box.to_dict()
-        response = make_response(
+        if not box:
+            return make_response({"error": "Box not found"}, 404)
+        box_dict = box.to_dict(rules=('-subscription',))
+        response = make_response( 
             box_dict,
             200
         )
@@ -265,7 +262,7 @@ class BoxByID(Resource):
             for attr in form_data:
                 setattr(box, attr, form_data[attr])
             db.session.commit()
-            box_dict = box.to_dict()
+            box_dict = box.to_dict(rules=('-subscription',))
             response = make_response(
                 box_dict,
                 200
@@ -282,7 +279,7 @@ class BoxByID(Resource):
         if not boxes:
             return make_response({"errors": "Box not found"}, 404)
         db.session.delete(boxes)
-        db.commit()
+        db.session.commit()
         return make_response({}, 204)
     
 
