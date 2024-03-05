@@ -55,14 +55,7 @@ class Order(db.Model, SerializerMixin):
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
     # Relationships
     user = db.relationship("User", back_populates="orders")
-<<<<<<< HEAD
     subscription = db.relationship("Subscription", back_populates="orders")
-=======
-    subscription = db.relationship(
-        "Subscription",
-        back_populates="orders",
-    )
->>>>>>> 684c45155977f75583faf97edfc3e53cf839f4a7
     # Serializers
     serialize_rules = (
         "-user.orders",
