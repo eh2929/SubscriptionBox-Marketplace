@@ -1,9 +1,10 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates
 from config import db
+
 # from sqlalchemy.ext.associationproxy import association_proxy
 
-# Models go here!
+
 # User Model
 class User(db.Model, SerializerMixin):
     # Table
@@ -12,24 +13,32 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String, unique=True)
     password = db.Column(db.String)
-    email = db.Column(db.String)
+    email = db.Column(db.String, unique=True)
     total_active_orders = db.Column(db.Integer)
     # Relationships
-    orders = db.relationship("Order", back_populates="user", cascade = 'all,delete')
+    orders = db.relationship("Order", back_populates="user", cascade="all,delete")
     # Serializers
     serialize_rules = ("-orders.user",)
+
     # Validation
     @validates("username")
     def validate_username(self, key, username):
-        if len(username) < 3:
-            raise ValueError("Username must be at least 3 characters long.")
-        return username
-    @validates('email')
+        if not username:
+            raise ValueError(f"{key} is required.")
+        elif len(username) < 3:
+            raise ValueError(f"{key}. Must be at least 3 characters long.")
+        else:
+            return username
+
+    @validates("email")
     def validate_email(self, key, email):
-        if '@' not in email:
+        if "@" not in email:
             raise ValueError(f"{key}. Invalid email address.")
+        elif not email:
+            raise ValueError(f"{key} is required.")
         else:
             return email
+
 
 # Order Model
 class Order(db.Model, SerializerMixin):
@@ -45,20 +54,46 @@ class Order(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
     # Relationships
-    user = db.relationship("User", back_populates="orders", cascade = 'all, delete')
-    subscription = db.relationship("Subscription", back_populates="orders", cascade = 'all,delete')
+    user = db.relationship("User", back_populates="orders")
+    subscription = db.relationship(
+        "Subscription",
+        back_populates="orders",
+    )
     # Serializers
     serialize_rules = (
         "-user.orders",
         "-subscription.orders",
     )
+
+    # Predefined values
+    VALID_STATUSES = ["pending", "shipped", "delivered", "cancelled"]
+    VALID_FREQUENCIES = ["weekly", "biweekly", "monthly"]
+
     # Validation
-    @validates('quantity', 'frequency')
-    def validate_not_empty(self, key, value):
-        if not value:
+    @validates("status")
+    def validate_status(self, key, status):
+        if not status:
             raise ValueError(f"{key} is required.")
-        else:
-            return value
+        if status not in self.VALID_STATUSES:
+            raise ValueError(f"Invalid {key}. Must be one of {self.VALID_STATUSES}.")
+        return status
+
+    @validates("frequency")
+    def validate_frequency(self, key, frequency):
+        if not frequency:
+            raise ValueError(f"{key} is required.")
+        if frequency not in self.VALID_FREQUENCIES:
+            raise ValueError(f"Invalid {key}. Must be one of {self.VALID_FREQUENCIES}.")
+        return frequency
+
+    @validates("quantity")
+    def validate_quantity(self, key, quantity):
+        if not quantity:
+            raise ValueError(f"{key} is required.")
+        if not isinstance(quantity, int) or quantity <= 0:
+            raise ValueError(f"{key} must be a positive integer.")
+        return quantity
+
 
 # Subscription model
 class Subscription(db.Model, SerializerMixin):
@@ -69,17 +104,21 @@ class Subscription(db.Model, SerializerMixin):
     description = db.Column(db.String)
     subtotal_price = db.Column(db.Float)
     # Relationships
-    orders = db.relationship("Order", back_populates="subscription", cascade = 'all,delete')
-    box = db.relationship("Box", back_populates="subscription", cascade = 'all,delete')
+    orders = db.relationship(
+        "Order", back_populates="subscription", cascade="all,delete"
+    )
+    box = db.relationship("Box", back_populates="subscription")
     # Serializers
-    serialize_rules = ('-orders.subscription',)
+    serialize_rules = ("-orders.subscription", "-box")
+
     # Validation
-    @validates('description')
+    @validates("description")
     def validate_description(self, key, value):
         if not value:
             raise ValueError(f"{key} is required.")
         else:
             return value
+
 
 # Box model
 class Box(db.Model, SerializerMixin):
@@ -92,11 +131,14 @@ class Box(db.Model, SerializerMixin):
     # Foreign Key
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
     # Relationships
-    subscription = db.relationship("Subscription", back_populates="box", cascade = 'all,delete')
+    subscription = db.relationship(
+        "Subscription", back_populates="box", cascade="all,delete"
+    )
     # Serializers
-    serialize_rules = ('-subscription.box',)
+    serialize_rules = ("-subscription.box",)
+
     # Validation
-    @validates('name', 'included_items')
+    @validates("name", "included_items")
     def validate_name(self, key, value):
         if not value:
             raise ValueError(f"{key} is required.")
