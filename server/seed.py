@@ -17,7 +17,7 @@ def seed_users():
     for i in range(10):
         user = User(
             username=f"user_{i}",
-            password="password123",  # You may want to use a more secure method for generating passwords
+            password="password123",  # may want to use a more secure method for generating passwords
             email=f"user_{i}@example.com",
             total_active_orders=random.randint(0, 5),
         )

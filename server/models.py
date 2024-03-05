@@ -15,10 +15,15 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String)
     total_active_orders = db.Column(db.Integer)
     # Relationships
-    orders = db.relationship('Order', back_populates='user')
+    orders = db.relationship("Order", back_populates="user", cascade = 'all,delete')
     # Serializers
-    serialize_rules = ('-orders.user',)
+    serialize_rules = ("-orders.user",)
     # Validation
+    @validates("username")
+    def validate_username(self, key, username):
+        if len(username) < 3:
+            raise ValueError("Username must be at least 3 characters long.")
+        return username
     @validates('email')
     def validate_email(self, key, email):
         if '@' not in email:
@@ -40,10 +45,13 @@ class Order(db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
     # Relationships
-    user = db.relationship('User', back_populates='orders')
-    subscription = db.relationship('Subscription', back_populates='orders')
+    user = db.relationship("User", back_populates="orders", cascade = 'all, delete')
+    subscription = db.relationship("Subscription", back_populates="orders", cascade = 'all,delete')
     # Serializers
-    serialize_rules = ('-user.orders', '-subscription.orders',)
+    serialize_rules = (
+        "-user.orders",
+        "-subscription.orders",
+    )
     # Validation
     @validates('quantity', 'frequency')
     def validate_not_empty(self, key, value):
@@ -61,8 +69,8 @@ class Subscription(db.Model, SerializerMixin):
     description = db.Column(db.String)
     subtotal_price = db.Column(db.Float)
     # Relationships
-    orders = db.relationship('Order', back_populates='subscription')
-    box = db.relationship('Box', back_populates='subscription')
+    orders = db.relationship("Order", back_populates="subscription", cascade = 'all,delete')
+    box = db.relationship("Box", back_populates="subscription", cascade = 'all,delete')
     # Serializers
     serialize_rules = ('-orders.subscription',)
     # Validation
@@ -84,9 +92,9 @@ class Box(db.Model, SerializerMixin):
     # Foreign Key
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
     # Relationships
-    subscription = db.relationship('Subscription', back_populates='box')
+    subscription = db.relationship("Subscription", back_populates="box", cascade = 'all,delete')
     # Serializers
-    serialize_rules = ('-subscription.box')
+    serialize_rules = ('-subscription.box',)
     # Validation
     @validates('name', 'included_items')
     def validate_name(self, key, value):
