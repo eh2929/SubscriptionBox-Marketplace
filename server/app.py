@@ -90,7 +90,7 @@ class Orders(Resource):
             new_order = Order(
                 subscription_id=req_data["subscription_id"],
                 quantity=req_data["quantity"],
-                frequency=req_data["frequency"],
+                frequency=req_data["frequency"]
             )
         except:
             return make_response({"errors": ["validation errors"]}, 400)
@@ -158,7 +158,7 @@ class Subscriptions(Resource):
             )
             db.session.add(new_subscription)
             db.session.commit()
-            new_subscription_dict = new_subscription.to_dict()
+            new_subscription_dict = new_subscription.to_dict(rules=("-box", "-orders"))
             response = make_response(new_subscription_dict, 201)
         except:
             response = make_response({"error": "Could not create subscription"}, 400)
@@ -175,7 +175,7 @@ class SubscriptionByID(Resource):
         subscription = Subscription.query.filter_by(id=id).first()
         if not subscription:
             return make_response({"error": "Subscription not found"}, 404)
-        subscription_dict = subscription.to_dict()
+        subscription_dict = subscription.to_dict("-box", "-orders",)
         response = make_response(subscription_dict, 200)
         return response
 
@@ -188,7 +188,7 @@ class SubscriptionByID(Resource):
             for attr in form_data:
                 setattr(subscription, attr, form_data[attr])
             db.session.commit()
-            subscription_dict = subscription.to_dict()
+            subscription_dict = subscription.to_dict(rules=("-box", "-orders",))
             response = make_response(subscription_dict, 200)
         except:
             response = make_response({"error": "Could not update subscription"}, 400)
@@ -250,6 +250,8 @@ class BoxByID(Resource):
         try:
             form_data = request.get_json()
             box = Box.query.filter_by(id=id).first()
+            if not box:
+                return make_response({"error": "Box not found"}, 404)
             for attr in form_data:
                 setattr(box, attr, form_data[attr])
             db.session.commit()
