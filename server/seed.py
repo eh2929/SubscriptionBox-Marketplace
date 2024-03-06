@@ -19,6 +19,7 @@ def seed_users():
             username=f"user_{i}",
             password="password123",  # may want to use a more secure method for generating passwords
             email=f"user_{i}@example.com",
+            address=f"user_{i}'s address",
             total_active_orders=random.randint(0, 5),
         )
         db.session.add(user)
@@ -52,21 +53,25 @@ def seed_boxes():
             "name": "Self-Care Essentials Box",
             "included_items": "This box contains a variety of self-care products, including face masks, bath salts, and scented candles.",
             "subscription_id": 1,
+            "image": ""
         },
         {
             "name": "Beard Grooming Kit",
             "included_items": "Inside this box, you'll find beard oil, beard balm, and a beard comb.",
             "subscription_id": 2,
+            "image": ""
         },
         {
             "name": "Hair Care Deluxe",
             "included_items": "This box is filled with premium hair care products, including shampoo, conditioner, and hair serum.",
             "subscription_id": 3,
+            "image": ""
         },
         {
             "name": "Skincare Essentials Box",
             "included_items": "In this box, you'll find a selection of skincare essentials, such as cleanser, moisturizer, and sunscreen.",
             "subscription_id": 4,
+            "image": ""
         },
         # Add more boxes here if needed
     ]
