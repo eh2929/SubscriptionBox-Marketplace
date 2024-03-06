@@ -1,0 +1,20 @@
+.box-grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(350px, 1fr)
+  ); /* Adjust the minimum size of the grid items */
+  gap: 20px;
+}
+
+.box-item {
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.2);
+}
+
+.box-item img {
+  width: 280px; /* Adjust as needed */
+  height: 280px; /* Adjust as needed */
+  object-fit: cover;
+}

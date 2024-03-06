@@ -1,8 +1,8 @@
-"""add address and admin
+"""empty message
 
-Revision ID: 2b07396d7239
+Revision ID: 4acea51ed8e5
 Revises: 
-Create Date: 2024-03-06 11:41:41.479341
+Create Date: 2024-03-06 14:06:57.002268
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2b07396d7239'
+revision = '4acea51ed8e5'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,7 +21,7 @@ def upgrade():
     op.create_table('subscription',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
-    sa.Column('subtotal_price', sa.Float(), nullable=True),
+    sa.Column('price_per_box', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
@@ -39,6 +39,7 @@ def upgrade():
     op.create_table('box',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
+    sa.Column('image_url', sa.String(), nullable=True),
     sa.Column('included_items', sa.String(), nullable=True),
     sa.Column('subscription_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['subscription_id'], ['subscription.id'], name=op.f('fk_box_subscription_id_subscription')),

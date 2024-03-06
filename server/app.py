@@ -12,7 +12,7 @@ from models import User, Order, Subscription, Box
 from config import app, db, api
 
 # Secret Key
-app.secret_key = b'\x91\xd8\xcb.\xf6L\xa8;}Ll\xae[\t\xa0\x1d'
+app.secret_key = b"\x91\xd8\xcb.\xf6L\xa8;}Ll\xae[\t\xa0\x1d"
 # To genereate the secret key in the terminal run `python -c 'import os; print(os.urandom(16))'`
 # Hexadecimal string representation
 
@@ -95,7 +95,7 @@ class Orders(Resource):
             new_order = Order(
                 subscription_id=req_data["subscription_id"],
                 quantity=req_data["quantity"],
-                frequency=req_data["frequency"]
+                frequency=req_data["frequency"],
             )
         except:
             return make_response({"errors": ["validation errors"]}, 400)
@@ -159,7 +159,7 @@ class Subscriptions(Resource):
             form_data = request.get_json()
             new_subscription = Subscription(
                 description=form_data["description"],
-                subtotal_price=form_data["subtotal_price"],
+                price_per_box=form_data["price_per_box"],
             )
             db.session.add(new_subscription)
             db.session.commit()
@@ -180,7 +180,10 @@ class SubscriptionByID(Resource):
         subscription = Subscription.query.filter_by(id=id).first()
         if not subscription:
             return make_response({"error": "Subscription not found"}, 404)
-        subscription_dict = subscription.to_dict("-box", "-orders",)
+        subscription_dict = subscription.to_dict(
+            "-box",
+            "-orders",
+        )
         response = make_response(subscription_dict, 200)
         return response
 
@@ -193,7 +196,12 @@ class SubscriptionByID(Resource):
             for attr in form_data:
                 setattr(subscription, attr, form_data[attr])
             db.session.commit()
-            subscription_dict = subscription.to_dict(rules=("-box", "-orders",))
+            subscription_dict = subscription.to_dict(
+                rules=(
+                    "-box",
+                    "-orders",
+                )
+            )
             response = make_response(subscription_dict, 200)
         except:
             response = make_response({"error": "Could not update subscription"}, 400)
@@ -220,13 +228,21 @@ class Boxes(Resource):
         return response
 
     def post(self):
-
         try:
             form_data = request.get_json()
+            if (
+                "name" not in form_data
+                or "included_items" not in form_data
+                or "image_url" not in form_data
+            ):
+                return make_response({"error": "Missing required field"}, 400)
             new_box = Box(
                 name=form_data["name"],
                 included_items=form_data["included_items"],
-                subscription_id=form_data["subscription_id"],
+                image_url=form_data["image_url"],
+                subscription_id=form_data.get(
+                    "subscription_id", None
+                ),  # use .get() method to make subscription_id optional
             )
             db.session.add(new_box)
             db.session.commit()

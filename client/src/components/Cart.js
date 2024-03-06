@@ -2,11 +2,18 @@
 import React from "react";
 
 
-function Cart() {
+function Cart({ orders }) {
+  console.log("orders in Cart:", orders); // Log the orders
   return (
-    <div>
-      <h2>Cart</h2>
-      <Cart />
+    <div className="cart">
+      <h2>Your Orders</h2>
+      {orders.map((order, index) => (
+        <div key={index} className="order-item">
+          <h3>{order.name}</h3>
+          <p>Quantity: {order.quantity}</p>
+          <p>Frequency: {order.frequency}</p>
+        </div>
+      ))}
     </div>
   );
 }
