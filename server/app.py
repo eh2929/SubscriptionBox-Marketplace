@@ -14,6 +14,11 @@ from config import app, db, api
 # Initialize Api
 api = Api(app)
 
+# Secret Key
+app.secret_key = b'\x91\xd8\xcb.\xf6L\xa8;}Ll\xae[\t\xa0\x1d'
+# To genereate the secret key in the terminal run `python -c 'import os; print(os.urandom(16))'`
+# Hexadecimal string representation
+
 
 # Views go here!
 @app.route("/")
