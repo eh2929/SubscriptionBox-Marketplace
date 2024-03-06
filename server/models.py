@@ -55,10 +55,7 @@ class Order(db.Model, SerializerMixin):
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))
     # Relationships
     user = db.relationship("User", back_populates="orders")
-    subscription = db.relationship(
-        "Subscription",
-        back_populates="orders",
-    )
+    subscription = db.relationship("Subscription", back_populates="orders")
     # Serializers
     serialize_rules = (
         "-user.orders",
@@ -115,6 +112,12 @@ class Subscription(db.Model, SerializerMixin):
     @validates("description")
     def validate_description(self, key, value):
         if not value:
+            raise ValueError(f"{key} is required.")
+        else:
+            return value
+    @validates('subtotal_price')
+    def validate_subtotal_price(self, key, value):
+        if value <= -.01:
             raise ValueError(f"{key} is required.")
         else:
             return value
