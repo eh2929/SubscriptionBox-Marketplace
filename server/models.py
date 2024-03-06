@@ -73,6 +73,18 @@ class Order(db.Model, SerializerMixin):
         "-subscription.orders",
     )
 
+    def calculate_total_monthly_price(self):
+        subscription = Subscription.query.get(self.subscription_id)
+        if self.frequency == "weekly":
+            multiplier = 4
+        elif self.frequency == "biweekly":
+            multiplier = 2
+        else:  # monthly
+            multiplier = 1
+        self.total_monthly_price = (
+            subscription.price_per_box * self.quantity * multiplier
+        )
+
     # Predefined values
     VALID_STATUSES = ["pending", "shipped", "delivered", "cancelled"]
     VALID_FREQUENCIES = ["weekly", "biweekly", "monthly"]
@@ -110,7 +122,7 @@ class Subscription(db.Model, SerializerMixin):
     # Columns
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String)
-    subtotal_price = db.Column(db.Float)
+    price_per_box = db.Column(db.Float)
     # Relationships
     orders = db.relationship(
         "Order", back_populates="subscription", cascade="all,delete"
@@ -127,8 +139,8 @@ class Subscription(db.Model, SerializerMixin):
         else:
             return value
 
-    @validates("subtotal_price")
-    def validate_subtotal_price(self, key, value):
+    @validates("price_per_box")  # new
+    def validate_price_per_box(self, key, value):
         if value <= -0.01:
             raise ValueError(f"{key} is required.")
         else:

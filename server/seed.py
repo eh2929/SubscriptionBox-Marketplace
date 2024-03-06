@@ -32,14 +32,26 @@ def seed_users():
 def seed_subscriptions():
     print("Seeding subscriptions...")
     subscriptions = [
-        {"description": "Basic Self-Care Package", "subtotal_price": 30.0},
-        {"description": "Premium Beard Care Kit", "subtotal_price": 40.0},
-        {"description": "Deluxe Hair Care Box", "subtotal_price": 35.0},
-        {"description": "Ultimate Skincare Bundle", "subtotal_price": 50.0},
+        {
+            "description": "Basic Self-Care Package",
+            "price_per_box": 30.0,
+        },
+        {
+            "description": "Premium Beard Care Kit",
+            "price_per_box": 40.0,
+        },
+        {
+            "description": "Deluxe Hair Care Box",
+            "price_per_box": 35.0,
+        },
+        {
+            "description": "Ultimate Skincare Bundle",
+            "price_per_box": 50.0,
+        },
     ]
     for sub in subscriptions:
         subscription = Subscription(
-            description=sub["description"], subtotal_price=sub["subtotal_price"]
+            description=sub["description"], price_per_box=sub["price_per_box"]
         )
         db.session.add(subscription)
     db.session.commit()
@@ -93,20 +105,25 @@ def seed_orders():
     print("Seeding orders...")
     users = User.query.all()
     subscriptions = Subscription.query.all()
+    frequency_mapping = {
+        "monthly": 1,
+        "biweekly": 2,
+        "weekly": 4,
+    }  # add more if needed
     for _ in range(100):
         user = random.choice(users)
         subscription = random.choice(subscriptions)
+        quantity = random.randint(1, 10)
+        frequency_str = random.choice(Order.VALID_FREQUENCIES)
+        frequency_num = frequency_mapping[frequency_str]
+        total_monthly_price = subscription.price_per_box * quantity * frequency_num
         order = Order(
             user_id=user.id,
             subscription_id=subscription.id,
-            status=random.choice(
-                Order.VALID_STATUSES
-            ),  # Use valid statuses from Order model
-            frequency=random.choice(
-                Order.VALID_FREQUENCIES
-            ),  # Use valid frequencies from Order model
-            quantity=random.randint(1, 10),
-            total_monthly_price=random.uniform(10.0, 100.0),
+            status=random.choice(Order.VALID_STATUSES),
+            frequency=frequency_str,
+            quantity=quantity,
+            total_monthly_price=total_monthly_price,
         )
         db.session.add(order)
     db.session.commit()

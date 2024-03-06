@@ -159,7 +159,7 @@ class Subscriptions(Resource):
             form_data = request.get_json()
             new_subscription = Subscription(
                 description=form_data["description"],
-                subtotal_price=form_data["subtotal_price"],
+                price_per_box=form_data["price_per_box"],
             )
             db.session.add(new_subscription)
             db.session.commit()

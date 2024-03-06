@@ -1,0 +1,17 @@
+/* SelectedProduct.css */
+.selected-product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.2);
+  margin: 10px;
+}
+
+.selected-product img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+}
