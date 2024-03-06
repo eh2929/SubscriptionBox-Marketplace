@@ -7,7 +7,6 @@ import SelectionContainer from "./SelectionContainer";
 function Home() {
   return (
     <div>
-      <h2>Welcome to our Subscription Box Marketplace!</h2>
       <SearchBar />
       <BoxList />
       <SelectionContainer />
