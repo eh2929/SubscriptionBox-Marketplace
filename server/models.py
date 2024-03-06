@@ -46,7 +46,7 @@ class User(db.Model, SerializerMixin):
             raise ValueError(f"{key} is required.")
         else:
             return address
-
+    #comment for commit  (remove)
 
 # Order Model
 class Order(db.Model, SerializerMixin):
