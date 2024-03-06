@@ -21,6 +21,7 @@ def seed_users():
             email=f"user_{i}@example.com",
             address=f"user_{i}'s address",
             total_active_orders=random.randint(0, 5),
+            admin=False if i != 0 else True,  # first user is admin
         )
         db.session.add(user)
     db.session.commit()
@@ -53,25 +54,25 @@ def seed_boxes():
             "name": "Self-Care Essentials Box",
             "included_items": "This box contains a variety of self-care products, including face masks, bath salts, and scented candles.",
             "subscription_id": 1,
-            "image": ""
+            "image_url": "https://i.etsystatic.com/29479462/r/il/75915f/3191580298/il_794xN.3191580298_23yl.jpg",
         },
         {
             "name": "Beard Grooming Kit",
             "included_items": "Inside this box, you'll find beard oil, beard balm, and a beard comb.",
             "subscription_id": 2,
-            "image": ""
+            "image_url": "https://i.etsystatic.com/19259100/r/il/e41d62/2162011475/il_794xN.2162011475_3hbb.jpg",
         },
         {
             "name": "Hair Care Deluxe",
             "included_items": "This box is filled with premium hair care products, including shampoo, conditioner, and hair serum.",
             "subscription_id": 3,
-            "image": ""
+            "image_url": "https://i.etsystatic.com/36842034/r/il/0b9248/5673959767/il_794xN.5673959767_ju1z.jpg",
         },
         {
             "name": "Skincare Essentials Box",
-            "included_items": "In this box, you'll find a selection of skincare essentials, such as cleanser, moisturizer, and sunscreen.",
+            "included_items": "In this box, you'll find a selection of skincare essentials, such as cleanser, everyday skin care, and anti-aging products.",
             "subscription_id": 4,
-            "image": ""
+            "image_url": "https://i.etsystatic.com/13826775/r/il/504425/5380229319/il_794xN.5380229319_co44.jpg",
         },
         # Add more boxes here if needed
     ]
@@ -80,13 +81,13 @@ def seed_boxes():
             name=box["name"],
             included_items=box["included_items"],
             subscription_id=box["subscription_id"],
+            image_url=box["image_url"],
         )
         db.session.add(new_box)
     db.session.commit()
     print("Boxes seeded.")
 
 
-# Function to seed orders
 # Function to seed orders
 def seed_orders():
     print("Seeding orders...")
