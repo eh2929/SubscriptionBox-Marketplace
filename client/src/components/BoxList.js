@@ -1,23 +1,25 @@
 // src/components/BoxList.js
-import React from "react";
-import BoxCard from "./BoxCard";
+import React, { useEffect, useState } from "react";
 
 function BoxList() {
-  // Dummy data for demonstration
-  const boxes = [
-    { id: 1, name: "Box 1", description: "Description for Box 1" },
-    { id: 2, name: "Box 2", description: "Description for Box 2" },
-    { id: 3, name: "Box 3", description: "Description for Box 3" },
-  ];
+  const [boxes, setBoxes] = useState([]);
+
+  //fetch to our back-end server
+  useEffect(() => {
+    fetch("http://localhost:5555/boxes") 
+      .then((response) => response.json())
+      .then((data) => setBoxes(data));
+  }, []);
 
   return (
     <div>
-      <h3>Available Subscription Boxes:</h3>
-      <div>
-        {boxes.map((box) => (
-          <BoxCard key={box.id} box={box} />
-        ))}
-      </div>
+      {boxes.map((box) => (
+        <div key={box.id}>
+          <h2>{box.name}</h2>
+          <p>{box.included_items}</p>
+          {/* Add more box properties here */}
+        </div>
+      ))}
     </div>
   );
 }
