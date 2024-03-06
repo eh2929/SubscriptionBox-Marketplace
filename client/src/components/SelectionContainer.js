@@ -2,17 +2,24 @@
 import React from "react";
 import SelectedProduct from "./SelectedProduct";
 
-function SelectionContainer() {
-  // Dummy data for demonstration
-  const selectedProduct = {
-    name: "Selected Box",
-    description: "Description for Selected Box",
-  };
-
+function SelectionContainer({
+  selectedBoxes,
+  onRemoveClick,
+  onQuantityChange,
+  onFrequencyChange,
+}) {
   return (
-    <div>
-      <h3>Selected Box:</h3>
-      <SelectedProduct product={selectedProduct} />
+    <div className="selection-container">
+      <h2>Selected Products</h2>
+      {selectedBoxes.map((box, index) => (
+        <SelectedProduct
+          key={index}
+          box={box}
+          onRemoveClick={onRemoveClick}
+          onQuantityChange={onQuantityChange}
+          onFrequencyChange={onFrequencyChange}
+        />
+      ))}
     </div>
   );
 }
