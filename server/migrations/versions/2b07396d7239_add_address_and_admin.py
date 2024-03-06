@@ -1,8 +1,8 @@
-"""empty message
+"""add address and admin
 
-Revision ID: 7810439adf42
+Revision ID: 2b07396d7239
 Revises: 
-Create Date: 2024-03-05 14:00:38.132558
+Create Date: 2024-03-06 11:41:41.479341
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7810439adf42'
+revision = '2b07396d7239'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,6 +30,8 @@ def upgrade():
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('total_active_orders', sa.Integer(), nullable=True),
+    sa.Column('address', sa.String(), nullable=True),
+    sa.Column('admin', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
