@@ -14,12 +14,26 @@ app.app_context().push()
 # Function to seed users
 def seed_users():
     print("Seeding users...")
+    names = [
+        "John Doe",
+        "Jane Smith",
+        "Alice Johnson",
+        "Bob Brown",
+        "Charlie Davis",
+        "Diana Evans",
+        "Ethan Foster",
+        "Grace Harris",
+        "Ivan Garcia",
+        "Julia Hernandez",
+    ]
     for i in range(10):
         user = User(
             username=f"user_{i}",
             password="password123",  # may want to use a more secure method for generating passwords
             email=f"user_{i}@example.com",
-            address=f"user_{i}'s address",
+            address=f"1234 Example St, Apt {i}",
+            full_name=names[i],  # Use actual names
+            phone_number=f"555-555-{i}{i}{i}{i}",
             total_active_orders=random.randint(0, 5),
             admin=False if i != 0 else True,  # first user is admin
         )

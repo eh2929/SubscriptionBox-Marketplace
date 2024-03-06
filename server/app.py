@@ -314,11 +314,12 @@ class CheckSession(Resource):
     def get(self):
         user = User.query.filter(User.id == session.get('user_id')).first()
         if not user:
-            response = make_respones({'error': 'Invalid username or password'}, 401) 
+            response = make_response({'error': 'Invalid username or password'}, 401) 
         elif user:
             return user.to_dict()
         else:
             response = make_response({'error': 'Login failed'}, 401)
+            return response
 
 api.add_resource(CheckSession, '/check_session')
 
