@@ -61,11 +61,11 @@ function BoxList() {
           return (
             <div key={box.id} className="box-item">
               <h2>{box.name}</h2>
+              <img src={box.image_url} alt={box.name} />
               <p>{box.included_items}</p>
               {subscription && (
                 <p>Price per box: ${subscription.price_per_box}</p>
               )}
-              <img src={box.image_url} alt={box.name} />
               <button onClick={() => handleAddClick(box)}>
                 Start Subscription!
               </button>

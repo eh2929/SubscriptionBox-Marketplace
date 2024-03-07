@@ -60,7 +60,7 @@ function App() {
   return (
     <Router>
       <div>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
         <Header />
         <Switch>
           <Route path="/" exact component={Home}>
