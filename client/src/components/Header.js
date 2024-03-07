@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Header({ user }) {
+function Header({}) {
   return (
     <div>
       <h1>Welcome to the Subscription Box Marketplace</h1>
@@ -11,28 +11,24 @@ function Header({ user }) {
           <li>
             <Link to="/">Home</Link>
           </li>
-          {user ? (
-            <>
-              <li>
-                <Link to="/profile">Profile</Link>
-              </li>
-              <li>
-                <Link to="/cart">Cart</Link>
-              </li>
-              <li>
-                <Link to="/logout">Logout</Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/signup">Sign Up</Link>
-              </li>
-            </>
-          )}
+
+          <>
+            <li>
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <Link to="/cart">Cart</Link>
+            </li>
+            <li>
+              <Link to="/logout">Logout</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/signup">Sign Up</Link>
+            </li>
+          </>
         </ul>
       </nav>
     </div>
