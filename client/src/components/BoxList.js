@@ -25,12 +25,21 @@ function BoxList() {
   }, []);
 
   const handleAddClick = (box, quantity, frequency) => {
+    console.log("handleAddClick is being called"); // Add this line
     console.log(`Type of box.id: ${typeof box.id}`);
     console.log(`Type of quantity: ${typeof quantity}`);
     console.log(`Type of frequency: ${typeof frequency}`);
 
     setSelectedBoxes((prevBoxes) => [...prevBoxes, box]);
     const url = "http://localhost:5555/orders"; // URL
+
+    const requestBody = {
+      box_id: box.id,
+      quantity: parseInt(quantity),
+      frequency: frequency,
+    };
+
+    console.log(requestBody);
 
     fetch(url, {
       method: "POST",
@@ -58,13 +67,13 @@ function BoxList() {
       });
   };
 
-const onCreateBox = (box) => {
-  setBoxes((boxes) => [...boxes, box]);
-};
+  const onCreateBox = (box) => {
+    setBoxes((boxes) => [...boxes, box]);
+  };
 
   return (
     <div>
-      <BoxCreation onCreateBox={onCreateBox}/>
+      <BoxCreation onCreateBox={onCreateBox} />
       <div className="box-grid">
         {boxes.map((box) => {
           const subscription = subscriptions.find(

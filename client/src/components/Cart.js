@@ -79,7 +79,7 @@ function Cart() {
       {orders.map((order, index) => (
         <div key={index} className="order-item">
           <h3>Order ID: {order.id}</h3>
-          <p>Subscription: {order.subscription.description}</p>
+          <p>Subscription: {order.subscription.name}</p>
           <label>
             Quantity:
             <input
