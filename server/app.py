@@ -309,6 +309,14 @@ class Login(Resource):
 
 api.add_resource(Login, "/login")
 
+class Logout(Resource):
+    def post(self):
+        #clear the user_id from the session
+        session.pop("user_id", None)
+        return make_response({"message": "Logged out"}, 204)
+    
+api.add_resource(Logout, "/logout")
+
 class CheckSession(Resource):
 
     def get(self):
