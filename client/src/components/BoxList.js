@@ -2,6 +2,7 @@
 // BoxList.js
 import React, { useEffect, useState } from "react";
 import "./BoxList.css"; // Import the CSS file
+import BoxCreation from "./BoxCreation";
 
 function BoxList() {
   const [boxes, setBoxes] = useState([]);
@@ -29,7 +30,7 @@ function BoxList() {
     console.log(`Type of frequency: ${typeof frequency}`);
 
     setSelectedBoxes((prevBoxes) => [...prevBoxes, box]);
-    const url = "http://localhost:5555/orders"; // replace with your actual URL
+    const url = "http://localhost:5555/orders"; // URL
 
     fetch(url, {
       method: "POST",
@@ -57,8 +58,13 @@ function BoxList() {
       });
   };
 
+const onCreateBox = (box) => {
+  setBoxes((boxes) => [...boxes, box]);
+};
+
   return (
     <div>
+      <BoxCreation onCreateBox={onCreateBox}/>
       <div className="box-grid">
         {boxes.map((box) => {
           const subscription = subscriptions.find(

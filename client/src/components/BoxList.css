@@ -8,15 +8,32 @@
 }
 
 .box-item {
+  border-radius: 5px;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #ccc;
   padding: 20px;
   box-shadow: 2px 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
 .box-item img {
+  margin: 5px;
   width: 280px; /* Adjust as needed */
   height: 280px; /* Adjust as needed */
   object-fit: cover;
+}
+
+.box-item button {
+  margin: 10px;
+  background-color: #636665;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
 }
 
 .box-item label {

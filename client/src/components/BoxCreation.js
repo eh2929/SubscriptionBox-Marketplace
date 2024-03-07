@@ -1,21 +1,40 @@
 import React, { useState } from "react";
 
-const BoxCreation = () => {
+const BoxCreation = ({onCreateBox}) => {
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
-    price: "",
+    included_items: "",
+    image_url: "",
+    price: ""
     // Add more fields as needed
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    console.log(e.target.name)
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your logic here to handle form submission
+    fetch('/boxes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+      
+    }).then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      else {
+        return res.json()
+      }
+    })
+      .then(data => {
+        onCreateBox(data)})
+    
     console.log(formData); // For testing, you can log the form data
   };
 
@@ -34,10 +53,20 @@ const BoxCreation = () => {
           />
         </div>
         <div>
-          <label>Description:</label>
-          <textarea
-            name="description"
-            value={formData.description}
+          <label>included_items:</label>
+          <input
+            name="included_items"
+            value={formData.included_items}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label>Image URL:</label>
+          <input
+            type="text"
+            name="image_url"
+            value={formData.image_url}
             onChange={handleChange}
             required
           />
@@ -50,6 +79,15 @@ const BoxCreation = () => {
             value={formData.price}
             onChange={handleChange}
             required
+          />
+        </div>
+        <div>
+          <label>Subscription ID:</label>
+          <input
+              type="number"
+              name="subscription_id"
+              value={formData.subscription_id}
+              onChange={handleChange}
           />
         </div>
         {/* Add more form fields as needed */}
