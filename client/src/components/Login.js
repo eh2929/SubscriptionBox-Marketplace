@@ -1,9 +1,12 @@
 // src/components/Login.js
 import React, {useState} from "react";
 
-function Login({onLogin}) {
+function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("password123");
+
+  function onLogin(user) {
+  }
 
   function handleSubmit(e) {
     e.preventDefault();

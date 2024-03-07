@@ -4,8 +4,13 @@ import React from "react";
 function Profile() {
   return (
     <div>
-      <h2>User Profile</h2>
-      {/* Add user profile details here */}
+      <div>
+        <h2>User Profile</h2>
+        {/* Add user profile details here */}
+      </div>
+      <div>
+        <h1></h1>
+      </div>
     </div>
   );
 }
