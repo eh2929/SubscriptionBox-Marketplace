@@ -14,12 +14,28 @@ app.app_context().push()
 # Function to seed users
 def seed_users():
     print("Seeding users...")
+    names = [
+        "John Doe",
+        "Jane Smith",
+        "Alice Johnson",
+        "Bob Brown",
+        "Charlie Davis",
+        "Diana Evans",
+        "Ethan Foster",
+        "Grace Harris",
+        "Ivan Garcia",
+        "Julia Hernandez",
+    ]
     for i in range(10):
         user = User(
             username=f"user_{i}",
             password="password123",  # may want to use a more secure method for generating passwords
             email=f"user_{i}@example.com",
+            address=f"1234 Example St, Apt {i}",
+            full_name=names[i],  # Use actual names
+            phone_number=f"555-555-{i}{i}{i}{i}",
             total_active_orders=random.randint(0, 5),
+            admin=False if i != 0 else True,  # first user is admin
         )
         db.session.add(user)
     db.session.commit()
@@ -30,14 +46,26 @@ def seed_users():
 def seed_subscriptions():
     print("Seeding subscriptions...")
     subscriptions = [
-        {"description": "Basic Self-Care Package", "subtotal_price": 30.0},
-        {"description": "Premium Beard Care Kit", "subtotal_price": 40.0},
-        {"description": "Deluxe Hair Care Box", "subtotal_price": 35.0},
-        {"description": "Ultimate Skincare Bundle", "subtotal_price": 50.0},
+        {
+            "description": "Basic Self-Care Package",
+            "price_per_box": 30.0,
+        },
+        {
+            "description": "Premium Beard Care Kit",
+            "price_per_box": 40.0,
+        },
+        {
+            "description": "Deluxe Hair Care Box",
+            "price_per_box": 35.0,
+        },
+        {
+            "description": "Ultimate Skincare Bundle",
+            "price_per_box": 50.0,
+        },
     ]
     for sub in subscriptions:
         subscription = Subscription(
-            description=sub["description"], subtotal_price=sub["subtotal_price"]
+            description=sub["description"], price_per_box=sub["price_per_box"]
         )
         db.session.add(subscription)
     db.session.commit()
@@ -52,21 +80,25 @@ def seed_boxes():
             "name": "Self-Care Essentials Box",
             "included_items": "This box contains a variety of self-care products, including face masks, bath salts, and scented candles.",
             "subscription_id": 1,
+            "image_url": "https://i.etsystatic.com/29479462/r/il/75915f/3191580298/il_794xN.3191580298_23yl.jpg",
         },
         {
             "name": "Beard Grooming Kit",
             "included_items": "Inside this box, you'll find beard oil, beard balm, and a beard comb.",
             "subscription_id": 2,
+            "image_url": "https://i.etsystatic.com/19259100/r/il/e41d62/2162011475/il_794xN.2162011475_3hbb.jpg",
         },
         {
             "name": "Hair Care Deluxe",
             "included_items": "This box is filled with premium hair care products, including shampoo, conditioner, and hair serum.",
             "subscription_id": 3,
+            "image_url": "https://i.etsystatic.com/36842034/r/il/0b9248/5673959767/il_794xN.5673959767_ju1z.jpg",
         },
         {
             "name": "Skincare Essentials Box",
-            "included_items": "In this box, you'll find a selection of skincare essentials, such as cleanser, moisturizer, and sunscreen.",
+            "included_items": "In this box, you'll find a selection of skincare essentials, such as cleanser, everyday skin care, and anti-aging products.",
             "subscription_id": 4,
+            "image_url": "https://i.etsystatic.com/13826775/r/il/504425/5380229319/il_794xN.5380229319_co44.jpg",
         },
         # Add more boxes here if needed
     ]
@@ -75,6 +107,7 @@ def seed_boxes():
             name=box["name"],
             included_items=box["included_items"],
             subscription_id=box["subscription_id"],
+            image_url=box["image_url"],
         )
         db.session.add(new_box)
     db.session.commit()
@@ -82,25 +115,29 @@ def seed_boxes():
 
 
 # Function to seed orders
-# Function to seed orders
 def seed_orders():
     print("Seeding orders...")
     users = User.query.all()
     subscriptions = Subscription.query.all()
+    frequency_mapping = {
+        "monthly": 1,
+        "biweekly": 2,
+        "weekly": 4,
+    }  # add more if needed
     for _ in range(100):
         user = random.choice(users)
         subscription = random.choice(subscriptions)
+        quantity = random.randint(1, 10)
+        frequency_str = random.choice(Order.VALID_FREQUENCIES)
+        frequency_num = frequency_mapping[frequency_str]
+        total_monthly_price = subscription.price_per_box * quantity * frequency_num
         order = Order(
             user_id=user.id,
             subscription_id=subscription.id,
-            status=random.choice(
-                Order.VALID_STATUSES
-            ),  # Use valid statuses from Order model
-            frequency=random.choice(
-                Order.VALID_FREQUENCIES
-            ),  # Use valid frequencies from Order model
-            quantity=random.randint(1, 10),
-            total_monthly_price=random.uniform(10.0, 100.0),
+            status=random.choice(Order.VALID_STATUSES),
+            frequency=frequency_str,
+            quantity=quantity,
+            total_monthly_price=total_monthly_price,
         )
         db.session.add(order)
     db.session.commit()

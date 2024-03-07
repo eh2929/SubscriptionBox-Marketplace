@@ -15,6 +15,10 @@ class User(db.Model, SerializerMixin):
     password = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     total_active_orders = db.Column(db.Integer)
+    address = db.Column(db.String)
+    admin = db.Column(db.Boolean, default=False)
+    full_name = db.Column(db.String)
+    phone_number = db.Column(db.String)
     # Relationships
     orders = db.relationship("Order", back_populates="user", cascade="all,delete")
     # Serializers
@@ -39,6 +43,22 @@ class User(db.Model, SerializerMixin):
         else:
             return email
 
+    @validates("address")  # new
+    def validate_address(self, key, address):
+        if not address:
+            raise ValueError(f"{key} is required.")
+        else:
+            return address
+
+    @validates("phone_number")
+    def validate_phone_number(self, key, phone_number):
+        if not phone_number:
+            raise ValueError(f"{key} is required.")
+        else:
+            return phone_number
+
+    # comment for commit (remove)
+
 
 # Order Model
 class Order(db.Model, SerializerMixin):
@@ -61,6 +81,18 @@ class Order(db.Model, SerializerMixin):
         "-user.orders",
         "-subscription.orders",
     )
+
+    def calculate_total_monthly_price(self):
+        subscription = Subscription.query.get(self.subscription_id)
+        if self.frequency == "weekly":
+            multiplier = 4
+        elif self.frequency == "biweekly":
+            multiplier = 2
+        else:  # monthly
+            multiplier = 1
+        self.total_monthly_price = (
+            subscription.price_per_box * self.quantity * multiplier
+        )
 
     # Predefined values
     VALID_STATUSES = ["pending", "shipped", "delivered", "cancelled"]
@@ -99,7 +131,7 @@ class Subscription(db.Model, SerializerMixin):
     # Columns
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String)
-    subtotal_price = db.Column(db.Float)
+    price_per_box = db.Column(db.Float)
     # Relationships
     orders = db.relationship(
         "Order", back_populates="subscription", cascade="all,delete"
@@ -115,9 +147,10 @@ class Subscription(db.Model, SerializerMixin):
             raise ValueError(f"{key} is required.")
         else:
             return value
-    @validates('subtotal_price')
-    def validate_subtotal_price(self, key, value):
-        if value <= -.01:
+
+    @validates("price_per_box")  # new
+    def validate_price_per_box(self, key, value):
+        if value <= -0.01:
             raise ValueError(f"{key} is required.")
         else:
             return value
@@ -130,6 +163,7 @@ class Box(db.Model, SerializerMixin):
     # Columns
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    image_url = db.Column(db.String)
     included_items = db.Column(db.String)
     # Foreign Key
     subscription_id = db.Column(db.Integer, db.ForeignKey("subscription.id"))

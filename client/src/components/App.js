@@ -1,7 +1,7 @@
 // src/components/App.js
 // comment
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "./Header";
 import Home from "./Home";
 import Profile from "./Profile";
@@ -15,12 +15,14 @@ function App() {
     <Router>
       <div>
         <Header />
-        <Route path="/" exact component={Home} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/cart" component={Cart} />
-        <Route path="/login" component={Login} />
-        <Route path="/logout" component={Logout} />
-        <Route path="/create-box" component={BoxCreation} />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/cart" component={Cart} />
+          <Route path="/login" component={Login} />
+          <Route path="/logout" component={Logout} />
+          <Route path="/create-box" component={BoxCreation} />
+        </Switch>
       </div>
     </Router>
   );
