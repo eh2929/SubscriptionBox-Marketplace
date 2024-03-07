@@ -27,8 +27,14 @@ function SignUp() {
     })
       .then((r) => {
         if (r.ok) {
+          // Show success popup to the user
+          alert("Account created, please log-in!");
           return r.json();
-        } else throw new Error("Signup failed");
+        } else {
+          // Show error message to the user
+          alert("Sign-up failed");
+          throw new Error("Signup failed");
+        }
       })
       .then(history.push("/"))
       .catch((error) => console.error("Error:", error));
