@@ -319,7 +319,7 @@ class CheckSession(Resource):
             return user.to_dict()
         else:
             response = make_response({'error': 'Login failed'}, 401)
-        return response
+            return response
 
 api.add_resource(CheckSession, '/check_session')
 
