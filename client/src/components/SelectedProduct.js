@@ -7,7 +7,6 @@ function SelectedProduct({
   onRemoveClick,
   onQuantityChange,
   onFrequencyChange,
-  onCreateOrderClick,
 }) {
   // Check if box is defined before trying to access its properties
   return (
@@ -35,8 +34,8 @@ function SelectedProduct({
           <option value="monthly">Monthly</option>
         </select>
       </label>
-      <button onClick={onCreateOrderClick}>Create Order</button>
-      <button onClick={() => onRemoveClick(box)}>Start Over</button>
+
+      <button onClick={() => onRemoveClick(box)}>Remove</button>
     </div>
   );
 }
