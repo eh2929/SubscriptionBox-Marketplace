@@ -3,9 +3,11 @@ import React from "react";
 
 function SearchBar() {
   return (
-    <div>
-      <input type="text" placeholder="Search subscription boxes" />
-      <button>Search</button>
+    <div className='serach-bar-container'>
+      <div className="search-bar">
+        <input type="text" placeholder="Search subscription boxes" />
+        <button>Search</button>
+      </div>
     </div>
   );
 }
