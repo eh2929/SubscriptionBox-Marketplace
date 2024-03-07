@@ -2,32 +2,58 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-function SignUp({ onSignUp }) {
+function SignUp() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const history = useHistory();
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log("Username:", username); // This will be the username the user entered
-    console.log("Password:", password); // This will be the password the user entered
     fetch("http://127.0.0.1:5555/signup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+        username,
+        password,
+        full_name: fullName,
+        address,
+        phone_number: phoneNumber,
+      }),
     })
-      .then((r) => r.json())
-      .then((user) => {
-        console.log("User state after signup:", user);
-        onSignUp(user);
-      });
-    history.push("/");
+      .then((r) => {
+        if (r.ok) {
+          return r.json();
+        } else throw new Error("Signup failed");
+      })
+      .then(history.push("/"))
+      .catch((error) => console.error("Error:", error));
   }
 
   return (
     <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        placeholder="Full Name"
+      />
+      <input
+        type="text"
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
+        placeholder="Address"
+      />
+      <input
+        type="text"
+        value={phoneNumber}
+        onChange={(e) => setPhoneNumber(e.target.value)}
+        placeholder="Phone Number"
+      />
       <input
         type="text"
         value={username}
