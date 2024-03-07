@@ -23,7 +23,7 @@ function SignUp({ onSignUp }) {
         console.log("User state after signup:", user);
         onSignUp(user);
       });
-    history.push("/login");
+    history.push("/");
   }
 
   return (

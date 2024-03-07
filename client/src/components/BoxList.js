@@ -2,8 +2,6 @@
 // BoxList.js
 import React, { useEffect, useState } from "react";
 import "./BoxList.css"; // Import the CSS file
-import SelectionContainer from "./SelectionContainer";
-import Cart from "./Cart";
 
 function BoxList() {
   const [boxes, setBoxes] = useState([]);
@@ -25,32 +23,40 @@ function BoxList() {
       .then((data) => setSubscriptions(data));
   }, []);
 
-  const handleAddClick = (box) => {
-    setSelectedBoxes([...selectedBoxes, { ...box, quantity: 1, frequency: 1 }]);
+  const handleAddClick = (box, quantity, frequency) => {
+    console.log(`Type of box.id: ${typeof box.id}`);
+    console.log(`Type of quantity: ${typeof quantity}`);
+    console.log(`Type of frequency: ${typeof frequency}`);
+
+    setSelectedBoxes((prevBoxes) => [...prevBoxes, box]);
+    const url = "http://localhost:5555/orders"; // replace with your actual URL
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        box_id: box.id,
+        quantity: parseInt(quantity),
+        frequency: frequency,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setOrders((prevOrders) => [...prevOrders, data]);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
-  const handleRemoveClick = (boxToRemove) => {
-    setSelectedBoxes(selectedBoxes.filter((box) => box.id !== boxToRemove.id));
-  };
-
-  const handleQuantityChange = (id, quantity) => {
-    setSelectedBoxes(
-      selectedBoxes.map((box) => (box.id === id ? { ...box, quantity } : box))
-    );
-  };
-
-  const handleFrequencyChange = (id, frequency) => {
-    setSelectedBoxes(
-      selectedBoxes.map((box) => (box.id === id ? { ...box, frequency } : box))
-    );
-  };
-
-  const handleCreateOrderClick = () => {
-    setOrders([...orders, ...selectedBoxes]);
-    setSelectedBoxes([]); // Clear the selected boxes
-  };
-
-  console.log("orders in BoxList:", orders); // Log the orders
   return (
     <div>
       <div className="box-grid">
@@ -66,22 +72,38 @@ function BoxList() {
                 <p>Price per box: ${subscription.price_per_box}</p>
               )}
               <img src={box.image_url} alt={box.name} />
-              <button onClick={() => handleAddClick(box)}>
+              <label>
+                Quantity:
+                <input
+                  type="number"
+                  defaultValue="1"
+                  id={`quantity-${box.id}`}
+                />
+              </label>
+              <label>
+                Frequency:
+                <select defaultValue="Weekly" id={`frequency-${box.id}`}>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Biweekly">Biweekly</option>
+                  <option value="Monthly">Monthly</option>
+                  {/* Add more options as needed */}
+                </select>
+              </label>
+              <button
+                onClick={() =>
+                  handleAddClick(
+                    box,
+                    document.getElementById(`quantity-${box.id}`).value,
+                    document.getElementById(`frequency-${box.id}`).value
+                  )
+                }
+              >
                 Start Subscription!
               </button>
             </div>
           );
         })}
       </div>
-      <SelectionContainer
-        selectedBoxes={selectedBoxes}
-        onRemoveClick={handleRemoveClick}
-        onQuantityChange={handleQuantityChange}
-        onFrequencyChange={handleFrequencyChange}
-        onCreateOrderClick={handleCreateOrderClick}
-      />
-      <button onClick={handleCreateOrderClick}>Create Order</button>
-      
     </div>
   );
 }
