@@ -47,25 +47,25 @@ def seed_subscriptions():
     print("Seeding subscriptions...")
     subscriptions = [
         {
-            "description": "Basic Self-Care Package",
+            "name": "Basic Self-Care Package",
             "price_per_box": 30.0,
         },
         {
-            "description": "Premium Beard Care Kit",
+            "name": "Premium Beard Care Kit",
             "price_per_box": 40.0,
         },
         {
-            "description": "Deluxe Hair Care Box",
+            "name": "Deluxe Hair Care Box",
             "price_per_box": 35.0,
         },
         {
-            "description": "Ultimate Skincare Bundle",
+            "name": "Ultimate Skincare Bundle",
             "price_per_box": 50.0,
         },
     ]
     for sub in subscriptions:
         subscription = Subscription(
-            description=sub["description"], price_per_box=sub["price_per_box"]
+            name=sub["name"], price_per_box=sub["price_per_box"]
         )
         db.session.add(subscription)
     db.session.commit()
@@ -120,9 +120,9 @@ def seed_orders():
     users = User.query.all()
     subscriptions = Subscription.query.all()
     frequency_mapping = {
-        "monthly": 1,
-        "biweekly": 2,
-        "weekly": 4,
+        "Monthly": 1,
+        "Bi-weekly": 2,
+        "Weekly": 4,
     }  # add more if needed
     for _ in range(3):
         user = random.choice(users)

@@ -110,7 +110,7 @@ class Orders(Resource):
             # Create the order with the box's subscription_id
             new_order = Order(
                 subscription_id=box.subscription_id,
-                quantity=req_data["quantity"],
+                quantity=int(req_data["quantity"]),
                 frequency=req_data["frequency"],
                 total_monthly_price=total_monthly_price,
             )
@@ -177,12 +177,13 @@ class Subscriptions(Resource):
         try:
             form_data = request.get_json()
             new_subscription = Subscription(
-                description=form_data["description"],
+                name=form_data["name"],
                 price_per_box=form_data["price_per_box"],
             )
             db.session.add(new_subscription)
             db.session.commit()
             new_subscription_dict = new_subscription.to_dict(rules=("-box", "-orders"))
+            print(new_subscription_dict)  # Add this line for debugging
             response = make_response(new_subscription_dict, 201)
         except:
             response = make_response({"error": "Could not create subscription"}, 400)

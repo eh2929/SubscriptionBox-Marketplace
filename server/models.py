@@ -81,7 +81,7 @@ class Order(db.Model, SerializerMixin):
         "-user.orders",
         "-subscription.orders",
     )
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.calculate_total_monthly_price()
@@ -93,11 +93,11 @@ class Order(db.Model, SerializerMixin):
 
     def calculate_total_monthly_price(self):
         subscription = Subscription.query.get(self.subscription_id)
-        if self.frequency == "weekly":
+        if self.frequency == "Weekly":
             multiplier = 4
-        elif self.frequency == "biweekly":
+        elif self.frequency == "Bi-weekly":
             multiplier = 2
-        else:  # monthly
+        else:  # Monthly
             multiplier = 1
         self.total_monthly_price = (
             subscription.price_per_box * self.quantity * multiplier
@@ -105,16 +105,16 @@ class Order(db.Model, SerializerMixin):
 
     # Predefined values
     VALID_STATUSES = ["pending", "shipped", "delivered", "cancelled"]
-    VALID_FREQUENCIES = ["weekly", "biweekly", "monthly"]
+    VALID_FREQUENCIES = ["Weekly", "Bi-weekly", "Monthly"]
 
     # Validation
-    @validates("status")
-    def validate_status(self, key, status):
-        if not status:
-            raise ValueError(f"{key} is required.")
-        if status not in self.VALID_STATUSES:
-            raise ValueError(f"Invalid {key}. Must be one of {self.VALID_STATUSES}.")
-        return status
+    # @validates("status")
+    # def validate_status(self, key, status):
+    #     if not status:
+    #         raise ValueError(f"{key} is required.")
+    #     if status not in self.VALID_STATUSES:
+    #         raise ValueError(f"Invalid {key}. Must be one of {self.VALID_STATUSES}.")
+    #     return status
 
     @validates("frequency")
     def validate_frequency(self, key, frequency):
@@ -139,7 +139,7 @@ class Subscription(db.Model, SerializerMixin):
     __tablename__ = "subscription"
     # Columns
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String)
+    name = db.Column(db.String)
     price_per_box = db.Column(db.Float)
     # Relationships
     orders = db.relationship(
@@ -150,7 +150,7 @@ class Subscription(db.Model, SerializerMixin):
     serialize_rules = ("-orders.subscription", "-box")
 
     # Validation
-    @validates("description")
+    @validates("name")
     def validate_description(self, key, value):
         if not value:
             raise ValueError(f"{key} is required.")
