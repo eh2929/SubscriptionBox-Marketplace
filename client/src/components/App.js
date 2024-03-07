@@ -11,21 +11,6 @@ import Logout from "./Logout";
 import BoxCreation from "./BoxCreation";
 
 function App() {
-  const [user, setUser] = useState("")
-
-  useEffect(() => {
-    fetch("/check_session")
-    .then(res => {
-      if (res.ok) {
-        res.json()
-        .then(data => setUser(data))
-      }
-    })
-  }, [])
-
-  function onLogin(user) {
-    setUser(user)
-  }
   return (
     <Router>
       <div>
