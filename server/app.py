@@ -20,6 +20,7 @@ app.secret_key = b"\x91\xd8\xcb.\xf6L\xa8;}Ll\xae[\t\xa0\x1d"
 # Initialize Api
 api = Api(app)
 
+
 # Views go here!
 @app.route("/")
 def index():
@@ -44,8 +45,9 @@ class Users(Resource):
         session["user_id"] = new_user.id
         return make_response(new_user.to_dict(), 201)
 
+
 # The second route is non-RESTful and allows users who are signing up to post a User.
-api.add_resource(Users, "/users", '/signup')
+api.add_resource(Users, "/users", "/signup")
 
 
 # User by ID class
@@ -92,13 +94,29 @@ class Orders(Resource):
     def post(self):
         req_data = request.get_json()
         try:
+            # Look up the box
+            box = Box.query.get(req_data["box_id"])
+            if not box:
+                return make_response({"errors": ["Box not found"]}, 404)
+
+            # Look up the subscription
+            subscription = Subscription.query.get(box.subscription_id)
+            if not subscription:
+                return make_response({"errors": ["Subscription not found"]}, 404)
+
+            # Calculate the total monthly price
+            total_monthly_price = subscription.price_per_box * req_data["quantity"]
+
+            # Create the order with the box's subscription_id
             new_order = Order(
-                subscription_id=req_data["subscription_id"],
+                subscription_id=box.subscription_id,
                 quantity=req_data["quantity"],
                 frequency=req_data["frequency"],
+                total_monthly_price=total_monthly_price,
             )
         except:
-            return make_response({"errors": ["validation errors"]}, 400)
+            return make_response({"error": ["validation error"]}, 400)
+
         db.session.add(new_order)
         db.session.commit()
         return make_response(new_order.to_dict(), 201)
@@ -132,6 +150,7 @@ class OrderById(Resource):
         try:
             for key, value in req_data.items():
                 setattr(order, key, value)
+            order.calculate_total_monthly_price()
         except:
             return make_response({"errors": ["validation errors"]}, 400)
         db.session.commit()
@@ -293,6 +312,7 @@ class BoxByID(Resource):
 
 api.add_resource(BoxByID, "/boxes/<int:id>")
 
+
 class Login(Resource):
     def post(self):
         try:
@@ -307,29 +327,34 @@ class Login(Resource):
             response = make_response({"error": "Could not login"}, 400)
         return response
 
+
 api.add_resource(Login, "/login")
+
 
 class Logout(Resource):
     def post(self):
-        #clear the user_id from the session
+        # clear the user_id from the session
         session.pop("user_id", None)
         return make_response({"message": "Logged out"}, 204)
-    
+
+
 api.add_resource(Logout, "/logout")
+
 
 class CheckSession(Resource):
 
     def get(self):
-        user = User.query.filter(User.id == session.get('user_id')).first()
+        user = User.query.filter(User.id == session.get("user_id")).first()
         if not user:
-            response = make_response({'error': 'Invalid username or password'}, 401) 
+            response = make_response({"error": "Invalid username or password"}, 401)
         elif user:
             return user.to_dict()
         else:
-            response = make_response({'error': 'Login failed'}, 401)
+            response = make_response({"error": "Login failed"}, 401)
             return response
 
-api.add_resource(CheckSession, '/check_session')
+
+api.add_resource(CheckSession, "/check_session")
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

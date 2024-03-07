@@ -1,4 +1,3 @@
-// src/components/App.js
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -12,6 +11,7 @@ import Login from "./Login";
 import Logout from "./Logout";
 import BoxCreation from "./BoxCreation";
 import Signup from "./Signup";
+
 
 function App() {
   const [orders, setOrders] = useState([]);
@@ -63,31 +63,22 @@ function App() {
         {/* <ToastContainer /> */}
         <Header />
         <Switch>
-          <Route path="/" exact component={Home}>
-            <Home />
-          </Route>
-          <Route path="/profile" component={Profile}>
-            <Profile user={user} />
-          </Route>
-          <Route path="/cart" component={Cart}>
-            <Cart orders={orders} />
-          </Route>
-          <Route path="/login" component={Login}>
-            <Login onLogin={onLogin} />
-          </Route>
-          <Route path="/logout" component={Logout} />
+          <Route path="/" exact component={Home} />
+          <Route path="/profile" render={() => <Profile user={user} />} />
+          <Route path="/cart" render={() => <Cart orders={orders} />} />
+          <Route path="/login" render={() => <Login onLogin={onLogin} />} />
           <Route path="/create-box" component={BoxCreation} />
-          <Route path="/signup" component={Signup}>
-            <Signup onSignUp={handleSignUp} /> {/* Update this line */}
-          </Route>
-          <Route path="/logout" component={Logout}>
-            {" "}
-            <Logout onLogout={handleLogout} />{" "}
-          </Route>
+          <Route
+            path="/signup"
+            render={() => <Signup onSignUp={handleSignUp} />}
+          />
+          <Route
+            path="/logout"
+            render={() => <Logout onLogout={handleLogout} />}
+          />
         </Switch>
       </div>
     </Router>
   );
-}
-
+  }
 export default App;
