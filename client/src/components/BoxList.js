@@ -45,10 +45,9 @@ function BoxList() {
     );
   };
 
-  const handleCreateOrderClick = (box) => {
-    const newOrders = [...orders, { ...box }];
-    console.log("newOrders:", newOrders); // Log the new orders
-    setOrders(newOrders);
+  const handleCreateOrderClick = () => {
+    setOrders([...orders, ...selectedBoxes]);
+    setSelectedBoxes([]); // Clear the selected boxes
   };
 
   console.log("orders in BoxList:", orders); // Log the orders
@@ -81,7 +80,8 @@ function BoxList() {
         onFrequencyChange={handleFrequencyChange}
         onCreateOrderClick={handleCreateOrderClick}
       />
-      <Cart orders={orders} />
+      <button onClick={handleCreateOrderClick}>Create Order</button>
+      
     </div>
   );
 }

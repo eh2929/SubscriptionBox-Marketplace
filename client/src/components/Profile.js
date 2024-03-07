@@ -1,11 +1,18 @@
 // src/components/Profile.js
 import React from "react";
 
-function Profile() {
+function Profile({ user }) {
+  if (!user) {
+    return <h2>Please log in to view your profile.</h2>;
+  }
+
   return (
-    <div>
-      <h2>User Profile</h2>
-      {/* Add user profile details here */}
+    <div className="profile">
+      <h2>Your Profile</h2>
+      <p>Username: {user.username}</p>
+      <p>Email: {user.email}</p>
+      <p>Address: {user.address}</p>
+      {/* Add more fields as needed */}
     </div>
   );
 }
