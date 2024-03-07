@@ -81,6 +81,15 @@ class Order(db.Model, SerializerMixin):
         "-user.orders",
         "-subscription.orders",
     )
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.calculate_total_monthly_price()
+
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        self.calculate_total_monthly_price()
 
     def calculate_total_monthly_price(self):
         subscription = Subscription.query.get(self.subscription_id)
@@ -99,29 +108,29 @@ class Order(db.Model, SerializerMixin):
     VALID_FREQUENCIES = ["weekly", "biweekly", "monthly"]
 
     # Validation
-    @validates("status")
-    def validate_status(self, key, status):
-        if not status:
-            raise ValueError(f"{key} is required.")
-        if status not in self.VALID_STATUSES:
-            raise ValueError(f"Invalid {key}. Must be one of {self.VALID_STATUSES}.")
-        return status
+    # @validates("status")
+    # def validate_status(self, key, status):
+    #     if not status:
+    #         raise ValueError(f"{key} is required.")
+    #     if status not in self.VALID_STATUSES:
+    #         raise ValueError(f"Invalid {key}. Must be one of {self.VALID_STATUSES}.")
+    #     return status
 
-    @validates("frequency")
-    def validate_frequency(self, key, frequency):
-        if not frequency:
-            raise ValueError(f"{key} is required.")
-        if frequency not in self.VALID_FREQUENCIES:
-            raise ValueError(f"Invalid {key}. Must be one of {self.VALID_FREQUENCIES}.")
-        return frequency
+    # @validates("frequency")
+    # def validate_frequency(self, key, frequency):
+    #     if not frequency:
+    #         raise ValueError(f"{key} is required.")
+    #     if frequency not in self.VALID_FREQUENCIES:
+    #         raise ValueError(f"Invalid {key}. Must be one of {self.VALID_FREQUENCIES}.")
+    #     return frequency
 
-    @validates("quantity")
-    def validate_quantity(self, key, quantity):
-        if not quantity:
-            raise ValueError(f"{key} is required.")
-        if not isinstance(quantity, int) or quantity <= 0:
-            raise ValueError(f"{key} must be a positive integer.")
-        return quantity
+    # @validates("quantity")
+    # def validate_quantity(self, key, quantity):
+    #     if not quantity:
+    #         raise ValueError(f"{key} is required.")
+    #     if not isinstance(quantity, int) or quantity <= 0:
+    #         raise ValueError(f"{key} must be a positive integer.")
+    #     return quantity
 
 
 # Subscription model

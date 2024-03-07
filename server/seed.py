@@ -124,7 +124,7 @@ def seed_orders():
         "biweekly": 2,
         "weekly": 4,
     }  # add more if needed
-    for _ in range(100):
+    for _ in range(3):
         user = random.choice(users)
         subscription = random.choice(subscriptions)
         quantity = random.randint(1, 10)
