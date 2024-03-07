@@ -15,8 +15,10 @@ class User(db.Model, SerializerMixin):
     password = db.Column(db.String)
     email = db.Column(db.String, unique=True)
     total_active_orders = db.Column(db.Integer)
-    address = db.Column(db.String)  # new
-    admin = db.Column(db.Boolean, default=False)  # new
+    address = db.Column(db.String)
+    admin = db.Column(db.Boolean, default=False)
+    full_name = db.Column(db.String)
+    phone_number = db.Column(db.String)
     # Relationships
     orders = db.relationship("Order", back_populates="user", cascade="all,delete")
     # Serializers
@@ -47,6 +49,13 @@ class User(db.Model, SerializerMixin):
             raise ValueError(f"{key} is required.")
         else:
             return address
+
+    @validates("phone_number")
+    def validate_phone_number(self, key, phone_number):
+        if not phone_number:
+            raise ValueError(f"{key} is required.")
+        else:
+            return phone_number
 
     # comment for commit (remove)
 
