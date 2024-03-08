@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+
 function BoxCreation({ onCreateBox }) {
   const [boxData, setBoxData] = useState({
     name: "",
