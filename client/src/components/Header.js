@@ -1,13 +1,14 @@
 // src/components/Header.js
 import React from "react";
+import './Header.css';
 import { Link } from "react-router-dom";
 
 
 function Header({}) {
   return (
-    <div>
+    <div className="header">
       <h1>Welcome to the Subscription Box Marketplace</h1>
-      <nav>
+      <nav className="navbar">
         <ul>
           <li>
             <Link to="/">Home</Link>
