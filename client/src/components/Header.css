@@ -1,0 +1,51 @@
+/* Header message */
+.header h1 {
+  font-family: 'Open Sans', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Navbar */
+.header nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Navbar container */
+.navbar {
+  background-color: #fff;
+  height: 50px;
+  padding: 10px;
+}
+
+/* Navbar list */
+.navbar ul {
+  font-family: 'Open Sans', sans-serif;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar list items */
+.navbar li {
+  font-family: 'Open Sans', sans-serif;
+  display: inline-block;
+  margin-right: 10px;
+  background-color: gray;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Navbar links on hover */
+.navbar Link:hover {
+  background-color: #fff;
+}
+
+/* Active/current link */
+.navbar .active {
+  background-color: #fff;
+}

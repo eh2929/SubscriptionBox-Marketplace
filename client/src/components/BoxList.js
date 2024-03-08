@@ -73,7 +73,9 @@ function BoxList() {
 
   return (
     <div>
-      <BoxCreation onCreateBox={onCreateBox} />
+      <div className="form-container">
+        <BoxCreation onCreateBox={onCreateBox} />
+      </div>
       <div className="box-grid">
         {boxes.map((box) => {
           const subscription = subscriptions.find(

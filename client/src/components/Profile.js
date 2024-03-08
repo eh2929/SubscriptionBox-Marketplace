@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./Profile.css";
 
 function Profile({ user }) {
   const [userInfo, setUserInfo] = useState(null);
@@ -52,38 +53,35 @@ function Profile({ user }) {
   }
 
   return (
-    <div className="profile">
-      <h2>Your Profile</h2>
-      <p>Username: {userInfo.username}</p>
-      <p>Email: {userInfo.email}</p>
-      <p>Delivery Address: {userInfo.address}</p>
-      <p>Full Name: {userInfo.full_name}</p>
-      <p>Phone Number: {userInfo.phone_number}</p>
-      <label>
-        Username:
-        <input type="text" defaultValue={userInfo.username} id="username" />
-      </label>
-      <label>
-        Email:
-        <input type="email" defaultValue={userInfo.email} id="email" />
-      </label>
-      <label>
-        Address:
-        <input type="text" defaultValue={userInfo.address} id="address" />
-      </label>
-      <label>
-        Full Name:
-        <input type="text" defaultValue={userInfo.full_name} id="full-name" />
-      </label>
-      <label>
-        Phone Number:
-        <input
-          type="text"
-          defaultValue={userInfo.phone_number}
-          id="phone-number"
-        />
-      </label>
-      <button onClick={handleUpdateClick}>Update Profile</button>
+    <div className="profile-container">
+      <div className="profile">
+        <h2>Your Profile</h2>
+        <p>Username: {userInfo.username}</p>
+        <p>Email: {userInfo.email}</p>
+        <p>Delivery Address: {userInfo.address}</p>
+        <p>Full Name: {userInfo.full_name}</p>
+        <p>Phone Number: {userInfo.phone_number}</p>
+      </div>
+      <div>
+        <form className="form">  
+          <label>Username:</label>
+          <input type="text" defaultValue={userInfo.username} id="username" />
+          
+          <label>Email:</label>
+          <input type="email" defaultValue={userInfo.email} id="email" />
+          
+          <label>Address:</label>
+          <input type="text" defaultValue={userInfo.address} id="address" />
+          
+          <label>Full Name:</label>
+          <input type="text" defaultValue={userInfo.full_name} id="full-name" />
+          
+          <label>Phone Number:</label>
+          <input type="text" defaultValue={userInfo.phone_number} id="phone-number" />
+          
+          <button onClick={handleUpdateClick}>Update Profile</button> 
+        </form>
+      </div>
     </div>
   );
 }
