@@ -49,7 +49,8 @@ function BoxCreation({ onCreateBox }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+  <div>
+    <form className="box-form" onSubmit={handleSubmit}>
       <div>
         <label>Name:</label>
         <input
@@ -92,6 +93,7 @@ function BoxCreation({ onCreateBox }) {
       </div>
       <button type="submit">Create Box</button>
     </form>
+  </div>
   );
 }
 
