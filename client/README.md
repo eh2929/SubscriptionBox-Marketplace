@@ -1,70 +1,62 @@
-# Getting Started with Create React App
+This project is a Python-based web application that serves as a backend API for a subscription-based service. It provides endpoints for managing users, orders, subscriptions, and boxes. The frontend is developed using React.js to offer a user-friendly interface for interacting with the backend functionalities.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Backend
 
-## Available Scripts
+### Technology Stack
 
-In the project directory, you can run:
+- **Python:** Flask framework is used for building the backend server.
+- **Database:** SQLAlchemy is utilized for database operations.
+- **RESTful API:** Flask-RESTful is employed for creating API endpoints.
+- **Authentication:** Flask-Login is integrated for user authentication.
+- **Migration:** Flask-Migrate is used for database migrations.
 
-### `npm start`
+### Usage
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The backend provides endpoints for managing users, orders, subscriptions, and boxes. Here's a brief overview of the available routes:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- `/users`: Allows users to be retrieved and created.
+- `/orders`: Provides functionalities for retrieving and creating orders.
+- `/subscriptions`: Enables the retrieval and creation of subscription plans.
+- `/boxes`: Allows the retrieval and creation of boxes containing items for subscription plans.
+- `/login` and `/logout`: Routes for user authentication.
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Follow these steps to set up the backend on your local machine:
 
-### `npm run build`
+1. Ensure Python 3 is installed.
+2. Clone the repository to your local machine.
+3. Install the required dependencies by running `pip install -r requirements.txt`.
+4. Set up the database by running `flask db upgrade`.
+5. Start the server by running `python3 your_file_name.py`.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Frontend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The frontend of this project is developed using React.js to provide an interactive user interface. It offers functionalities for user authentication, browsing products, managing orders, and more.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Technology Stack
 
-### `npm run eject`
+- **JavaScript:** React.js library is used for building the frontend components.
+- **Routing:** React Router is employed for client-side routing.
+- **State Management:** Local state and React hooks are utilized for managing state within components.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Usage
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The frontend offers various routes for different functionalities, including:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- `/`: Homepage displaying available products.
+- `/profile`: User profile page showing user information.
+- `/cart`: Cart page displaying user's orders.
+- `/login`: Login page for user authentication.
+- `/create-box`: Page for creating subscription boxes.
+- `/signup`: Signup page for new users.
+- `/logout`: Logout functionality.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Installation
 
-## Learn More
+Follow these steps to set up the frontend on your local machine:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Ensure Node.js and npm are installed.
+2. Navigate to the frontend directory.
+3. Install dependencies by running `npm install`.
+4. Start the frontend server by running `npm start`.
