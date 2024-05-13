@@ -67,8 +67,23 @@ function BoxList() {
       });
   };
 
-  const onCreateBox = (box) => {
+  const onCreateBox = async (box) => {
+    console.log(box); // Add this line
+
+    // Add the new box to the state
     setBoxes((boxes) => [...boxes, box]);
+
+    // Fetch the subscription data for the new box
+    const response = await fetch(
+      `http://localhost:5555/subscriptions/${box.subscription_id}`
+    );
+    const subscriptionData = await response.json();
+
+    // Update the subscriptions state
+    setSubscriptions((prevSubscriptions) => [
+      ...prevSubscriptions,
+      subscriptionData,
+    ]);
   };
 
   return (

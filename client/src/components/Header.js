@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 function Header({}) {
   return (
     <div className="header">
-      <h1>Welcome to the Subscription Box Marketplace</h1>
+      <h1>Welcome to Crate Joy</h1>
       <nav className="navbar">
         <ul>
           <li>

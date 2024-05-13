@@ -9,6 +9,7 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from models import User, Order, Subscription, Box
 
+
 # Local imports
 from config import app, db, api
 
@@ -19,6 +20,7 @@ app.secret_key = b"\x91\xd8\xcb.\xf6L\xa8;}Ll\xae[\t\xa0\x1d"
 
 # Api.error_router = lambda self, handler, e: handler(e) --> error handling option
 # Initialize Api
+
 api = Api(app)
 
 
@@ -165,9 +167,7 @@ api.add_resource(OrderById, "/orders/<int:id>")
 class Subscriptions(Resource):
 
     def get(self):
-        subs = [
-            sub.to_dict(rules=("-boxes", "-orders")) for sub in Subscription.query.all()
-        ]
+        subs = [sub.to_dict() for sub in Subscription.query.all()]
         if not subs:
             response = make_response({"error": "No subscriptions found"}, 404)
         else:
@@ -183,7 +183,7 @@ class Subscriptions(Resource):
             )
             db.session.add(new_subscription)
             db.session.commit()
-            new_subscription_dict = new_subscription.to_dict(rules=("-box", "-orders"))
+            new_subscription_dict = new_subscription.to_dict()
             print(new_subscription_dict)  # Add this line for debugging
             response = make_response(new_subscription_dict, 201)
         except:
@@ -201,10 +201,7 @@ class SubscriptionByID(Resource):
         subscription = Subscription.query.filter_by(id=id).first()
         if not subscription:
             return make_response({"error": "Subscription not found"}, 404)
-        subscription_dict = subscription.to_dict(
-            "-box",
-            "-orders",
-        )
+        subscription_dict = subscription.to_dict()
         response = make_response(subscription_dict, 200)
         return response
 
@@ -217,12 +214,7 @@ class SubscriptionByID(Resource):
             for attr in form_data:
                 setattr(subscription, attr, form_data[attr])
             db.session.commit()
-            subscription_dict = subscription.to_dict(
-                rules=(
-                    "-box",
-                    "-orders",
-                )
-            )
+            subscription_dict = subscription.to_dict()
             response = make_response(subscription_dict, 200)
         except:
             response = make_response({"error": "Could not update subscription"}, 400)
